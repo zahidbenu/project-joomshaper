@@ -1,6 +1,12 @@
 $(document).ready(function () {
+    // ======= Announcement bar
+    $('.announcement-close').click(function() {
+        $('.announcement-bar').fadeOut(300);
+    });
+
     // ======= Header scroll fixed
-    var header = $(".header-area");
+
+    var header = $("header");
     var scrollPoint = 200;
 
     $(window).scroll(function () {
@@ -12,9 +18,74 @@ $(document).ready(function () {
             header.removeClass("header-fixed slide-down");
         }
     });
+
+    // ======= Mobile menu 
+
+    const mobileMenu = $('#mobileMenu');
+    const mainMenu = $('.mobile-menu');
+
+    $('.mobile-bar-icon').click(function () {
+        mobileMenu.addClass('show-menu-mobile');
+
+        setTimeout(function () {
+            mainMenu.addClass('slide-left');
+        }, 50);
+    });
+
+    $('.mobile-menu-close-icon, .overlay').click(function () {
+        mainMenu.removeClass('slide-left');
+
+        setTimeout(function () {
+            mobileMenu.removeClass('show-menu-mobile');
+        }, 300);
+    });
+
+
+    $('.mobile-menu .dropdown').on('click', function (e) {
+        e.preventDefault();
+        $(this).closest('.dropdown').toggleClass('open');
+    });
+
+
+
+    // ======= Testimonial slider
+
+    $('.testimonial-slider').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: true,
+        dots: false,
+        autoplay: false,
+        autoplaySpeed: 3000,
+        infinite: true,
+        prevArrow: '<span class="slick-prev"><i class="fa-sharp fa-solid fa-chevron-left"></i></span>',
+        nextArrow: '<span class="slick-next"><i class="fa-sharp fa-solid fa-chevron-right"></i></span>',
+        responsive: [
+            {
+            breakpoint: 1200,
+            settings: {
+                slidesToShow: 2
+                }
+            },
+            {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 1
+                }
+            },
+            {
+            breakpoint: 640,
+            settings: {
+                arrows: false,
+                slidesToShow: 1
+                }
+            }
+        ]
+    });
 });
 
 // ======= Hero animation
+
 document.addEventListener("DOMContentLoaded", () => {
     const animationDelay = 500;
     const additionalDelay = 700;
@@ -68,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!heroArea) return;
 
-    // IntersectionObserver to detect the section in the viewport
+    // Intersection Observer
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
@@ -103,9 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(heroArea);
 });
 
-
-
 // ======= Counter animation
+
 function animateCounter(element, startNumber, targetNumber, duration) {
     let startTime;
     function step(timestamp) {
@@ -123,7 +193,7 @@ function animateCounter(element, startNumber, targetNumber, duration) {
     requestAnimationFrame(step);
 }
 
-const countdownElements = document.querySelectorAll('.counter'); // Retrieve countdown elements from the DOM
+const countdownElements = document.querySelectorAll('.counter');
 
 // Intersection Observer to each countdown
 countdownElements.forEach(element => {
@@ -141,9 +211,10 @@ countdownElements.forEach(element => {
     }, { threshold: 0.5 });
 
     observer.observe(element);
-});
+}); 
 
 // ======= Cookie consent
+
 document.addEventListener("DOMContentLoaded", () => {
     // Check if cookie_consent is set
     if (!document.cookie.includes("cookie_consent=accepted")) {
@@ -162,3 +233,128 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// ======= Animation
+
+document.querySelectorAll('.animate-group').forEach(section => {
+    const lines = section.querySelectorAll('.animate-me');
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                lines.forEach((line, i) => {
+                setTimeout(() => {
+                    line.classList.add('visible');
+                }, i * 200); 
+                });
+                observer.unobserve(entry.target);
+            } else {
+                lines.forEach(line => {
+                line.classList.remove('visible'); // reset when out of view
+                });
+            }
+        });
+    }, { threshold: 0.3 });
+
+    observer.observe(section);
+});
+
+
+window.addEventListener('DOMContentLoaded', () => {
+    const animatedSections = document.querySelectorAll('.scroll-animated-section');
+
+    window.addEventListener('scroll', () => {
+        animatedSections.forEach(section => {
+            // if (window.innerWidth <= 768) return;
+
+            const downs = section.querySelectorAll('.scroll-down');
+            const ups = section.querySelectorAll('.scroll-up');
+            const ups2 = section.querySelectorAll('.scroll-up2');
+            const spread = section.querySelectorAll('.spread');
+
+            const rect = section.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+
+            // only animate when section is in viewport
+            if (rect.top < windowHeight && rect.bottom > 0) {
+                const sectionHeight = rect.height + windowHeight;
+                const scrolled = windowHeight - rect.top;
+                const progress = Math.min(Math.max(0, scrolled / sectionHeight), 1);
+
+                // move all "down" images
+                downs.forEach(img => {
+                    const move = parseFloat(img.dataset.move) || 700;
+                    img.style.transform = `translateY(${progress * move}px)`;
+                });
+
+                // move all "up" images
+                ups.forEach(img => {
+                    const move = parseFloat(img.dataset.move) || 700;
+                    img.style.transform = `translateY(${-progress * move}px)`;
+                });
+
+                // move all "up" images with condition
+               
+
+                // move all "horizontal" images
+                spread.forEach(img => {
+                    const move = parseFloat(img.dataset.move) || 50;
+
+                    if (progress < 0.2) {
+                        img.style.transform = `translateX(0px)`;
+                    } else if (progress > 0.4) {
+                        // Freeze at value at 0.4
+                        const value = lastTransformValues.get(img) ?? -(0.4 * move);
+                        img.style.transform = `translateX(${value}px)`;
+                    } else {
+                        img.style.transform = `translateX(${-progress * move}px)`;
+                    }
+                });
+            }
+        });
+    });
+});
+
+
+let lastScrollY = window.scrollY;
+const imageOffsets = new WeakMap();
+
+window.addEventListener('scroll', () => {
+    const scrollDirection = window.scrollY > lastScrollY ? 'down' : 'up';
+    const scrollDelta = Math.abs(window.scrollY - lastScrollY);
+    lastScrollY = window.scrollY;
+
+    const section = document.querySelector('.templates-area');
+    const ups2 = section.querySelectorAll('.scroll-up2');
+
+    const rect = section.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (rect.top < windowHeight && rect.bottom > 0) {
+        const sectionHeight = rect.height;
+        const sectionVisibleHeight = Math.min(windowHeight, windowHeight - rect.top, rect.bottom);
+        const visibleRatio = sectionVisibleHeight / sectionHeight;
+
+        const baseTop = Math.min(...Array.from(ups2).map(img => img.offsetTop));
+
+        ups2.forEach(img => {
+            let currentY = imageOffsets.get(img) || 0;
+            const moveSpeed = parseFloat(img.dataset.move) || 1.2;
+            const rowOffset = img.offsetTop - baseTop;
+            const delayFactor = rowOffset / 8000;
+            const moveAmount = moveSpeed * (1 - delayFactor);
+
+            if (scrollDirection === 'down' && visibleRatio > 0.4) {
+                currentY += moveAmount;
+            } else if (scrollDirection === 'up' && visibleRatio > 0.8) {
+                currentY -= moveAmount;
+            }
+
+            // Clamp to prevent drifting too far
+            currentY = Math.max(Math.min(currentY, 100), -100);
+
+            img.style.transform = `translateY(${-currentY}px)`;
+            imageOffsets.set(img, currentY);
+        });
+    }
+});
