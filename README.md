@@ -30,8 +30,8 @@ This project I created for practice purposes as part of RRF-Batch-2025. I used H
 
 Feel free to reach out:
 
-📧 Email: [zahidbenu@gmail.com](mailto:zahidbenu@gmail.com)
-💼 LinkedIn: [linkedin.com/in/zahidbenu/](https://www.linkedin.com/in/zahidbenu/)
+- Email: [zahidbenu@gmail.com](mailto:zahidbenu@gmail.com)
+- LinkedIn: [linkedin.com/in/zahidbenu/](https://www.linkedin.com/in/zahidbenu/)
 
 ## 📜 License
 
