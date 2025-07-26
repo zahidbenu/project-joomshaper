@@ -4,7 +4,7 @@ This project I created for practice purposes as part of RRF-Batch-2025. I used H
 
 ## 🌐 Live Demo
 
-👉 Click [here](https://github.com/zahidbenu/project-joomshaper/) to view the live project.
+👉 Click [here](https://zahidbenu.github.io/project-joomshaper/) to view the live project.
 
 ## 🚀 Features
 - Mega Header Navigation Menu
